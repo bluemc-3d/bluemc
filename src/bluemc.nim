@@ -1,5 +1,5 @@
 # unfinished
-import nimgl/[glfw, opengl, imgui/impl_glfw]
+import nimgl/[glfw, opengl]
 import dataprotocol
 import strutils, json
 proc main() =
@@ -19,7 +19,6 @@ proc main() =
     doAssert window != nil
     window.makeContextCurrent
     doAssert glInit()
-    doAssert igGlfwInitForOpenGL(window, true)
     proc esc_close(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
         if key == int(GLFWKey.Escape) and action == GLFWPress:
             window.setWindowShouldClose(true)
