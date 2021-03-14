@@ -23,7 +23,7 @@ proc main() =
     doAssert window != nil
     window.makeContextCurrent
     doAssert glInit()
-    proc fulltoggle(): =
+    proc fulltoggle(): void =
         windowisfullscreen = not windowisfullscreen
     proc esc_close(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
         if key == int(GLFWKey.Escape) and action == GLFWPress:
