@@ -18,28 +18,28 @@ proc main() =
         windowxpos = 1800
         windowypos = -150
     let window = glfwCreateWindow(800, 600, "BlueMC") # Making a window
-    var windowisfullscreen = false
     setWindowMonitor(window, nil, windowxpos, windowypos, 800, 600, 0)
     doAssert window != nil
     window.makeContextCurrent
     doAssert glInit()
-    proc fulltoggle(): void =
-        windowisfullscreen = not windowisfullscreen
     proc esc_close(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
         if key == int(GLFWKey.Escape) and action == GLFWPress:
             window.setWindowShouldClose(true)
     proc fullscreen_toggle(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
-        if key == int(GLFWKey.F11) and action == GLFWPress:
-            fulltoggle()
+        if action == GLFWPress:
+            var tempMonitorCount: int32
+            var tempMonitors = glfwGetMonitors(tempMonitorCount.addr)
+            var myxpos, myypos: int32 = 50
+            if tempMonitorCount >= 2:
+                myxpos = 1800
+                myypos = -150
+            if key == int(GLFWKey.F11):
+                setWindowMonitor(window, tempMonitors[0], myxpos, myypos, 800, 600, 0)
+            elif key == int(GLFWKey.N):
+                setWindowMonitor(window, nil, myxpos, myypos, 800, 600, 0)
     discard window.setKeyCallback(GLFWKeyFun(fullscreen_toggle))
-    var monitorparam: GLFWMonitor = nil
     while not window.windowShouldClose():
         window.swapBuffers()
-        if windowisfullscreen and monitorparam == nil:
-            monitorparam = monitors[0]
-        elif (not windowisfullscreen) and (monitorparam != nil):
-            monitorparam = nil
-        setWindowMonitor(window, monitorparam, windowxpos, windowypos, 800, 600, 0)
         glClearColor(172.0, 246.0, 246.0, 0.92)
         for b in blocks.split(";"):
             drawAndParseBlock(b)
