@@ -38,9 +38,10 @@ proc main() =
             elif key == int(GLFWKey.N):
                 setWindowMonitor(window, nil, myxpos, myypos, 800, 600, 0)
     discard window.setKeyCallback(GLFWKeyFun(fullscreen_toggle))
+    discard window.setKeyCallback(GLFWKeyFun(esc_close))
     while not window.windowShouldClose():
         window.swapBuffers()
-        glClearColor(172.0, 246.0, 246.0, 0.92)
+        glClearColor(GLFloat(172.0), GLFloat(246.0), GLFloat(246.0), GLFloat(0.98))
         for b in blocks.split(";"):
             drawAndParseBlock(b)
         glfwPollEvents()
