@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.0.1"
+version       = "0.0.3"
 author        = "Joshua Cohen"
 description   = "A free, open-source clone of Minecraft"
 license       = "MIT"

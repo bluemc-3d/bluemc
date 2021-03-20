@@ -22,10 +22,7 @@ proc main() =
     doAssert window != nil
     window.makeContextCurrent
     doAssert glInit()
-    proc esc_close(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
-        if key == int(GLFWKey.Escape) and action == GLFWPress:
-            window.setWindowShouldClose(true)
-    proc fullscreen_toggle(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
+    proc fullscreen_toggle_esc(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
         if action == GLFWPress:
             var tempMonitorCount: int32
             var tempMonitors = glfwGetMonitors(tempMonitorCount.addr)
@@ -33,18 +30,23 @@ proc main() =
             if tempMonitorCount >= 2:
                 myxpos = 1800
                 myypos = -150
+            var videoMode = tempMonitors[0].getVideoMode()
+            var monwidth: int32 = videoMode.width
+            var monheight: int32 = videoMode.height
             if key == int(GLFWKey.F11):
-                setWindowMonitor(window, tempMonitors[0], myxpos, myypos, 800, 600, 0)
+                setWindowMonitor(window, tempMonitors[0], 0, 0, monwidth, monheight, 0)
             elif key == int(GLFWKey.N):
                 setWindowMonitor(window, nil, myxpos, myypos, 800, 600, 0)
-    discard window.setKeyCallback(GLFWKeyFun(fullscreen_toggle))
-    discard window.setKeyCallback(GLFWKeyFun(esc_close))
+            elif key == int(GLFWKey.Escape):
+                window.setWindowShouldClose(true)
+    discard window.setKeyCallback(GLFWKeyFun(fullscreen_toggle_esc))
     while not window.windowShouldClose():
-        window.swapBuffers()
-        glClearColor(GLFloat(172.0), GLFloat(246.0), GLFloat(246.0), GLFloat(0.98))
+        glfwPollEvents()
+        glClearColor(GLFloat(172.0/255.0), GLFloat(246.0/255.0), GLFloat(246.0/255.0), GLFloat(0.98))
+        glClear(GL_COLOR_BUFFER_BIT)
         for b in blocks.split(";"):
             drawAndParseBlock(b)
-        glfwPollEvents()
+        window.swapBuffers()
     window.destroyWindow
     glfwTerminate()
 main()
