@@ -4,7 +4,11 @@ import strutils
 type
   Texture* = object
     top*: string
-    side*: string
+    left*: string
+    right*: string
+    bottom*: string
+    front*: string
+    back*: string
 
 type
   Vector* = object
@@ -23,14 +27,22 @@ type
     id*: NamespacedString
     texture*: Texture
 
-proc newTexture*(top: string, side: string) : Texture =
+proc newTexture*(top: string, bottom: string, left: string, right: string, front: string, back: string) : Texture =
   result.top = top
-  result.side = side
+  result.left = left
+  result.right = right
+  result.bottom = bottom
+  result.front = front
+  result.back = back
 
 proc parseTexture*(data: string) : Texture =
   let textureJson = parseJson(data)
   result.top = textureJson["top"].getStr()
-  result.side = textureJson["side"].getStr()
+  result.left = textureJson["left"].getStr()
+  result.right = textureJson["right"].getStr()
+  result.bottom = textureJson["bottom"].getStr()
+  result.front = textureJson["front"].getStr()
+  result.back = textureJson["back"].getStr()
 
 proc newVector*(x: float, y: float, z: float) : Vector =
   result.x = x
@@ -65,4 +77,4 @@ proc parseBlock*(data: string) : Block =
 
 # tests
 if isMainModule:
-  doAssert parseBlock("""{"id": "bluemc:test", "position": "{\"x\": 1.73, \"y\": 2.14, \"z\": 3.14159265358979323846}", "texture": "{\"top\": \"hi\", \"side\": \"hello\"}"}""") == newBlock(newVector(1.73, 2.14, 3.14159265358979323846), newNamespacedString("bluemc", "test"), newTexture("hi", "hello"))
+  doAssert parseBlock("""{"id": "bluemc:test", "position": "{\"x\": 1.73, \"y\": 2.14, \"z\": 3.14159265358979323846}", "texture": "{\"top\": \"hi\", \"left\": \"hello\", \"right\": \"testTEST\", \"bottom\": \"nyan nyan nyan nyan nyan nyan nyan nyan\", \"front\": \"dis is de front\", \"back\": \"IM DE BAK\"}"}""") == newBlock(newVector(1.73, 2.14, 3.14159265358979323846), newNamespacedString("bluemc", "test"), newTexture("hi", "hello", "testTEST", "nyan nyan nyan nyan nyan nyan nyan nyan", "dis is de front", "IM DE BAK"))
