@@ -11,4 +11,10 @@ bin           = @["bluemc"]
 # Dependencies
 
 requires "nim >= 1.4.4"
-requires "nimgl >= 1.1.9"
+requires "opengl >= 1.1.9"
+
+
+# Tasks
+
+task buildmc, "Build the package":
+  exec "nimble build --threads:on"
