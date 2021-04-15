@@ -1,22 +1,10 @@
-import opengl, opengl/[glut, glu]
-import os, strutils, threadpool
+import nimgl, nimgl/[opengl, glfw]
+import strutils, os
 import camera, controller, dataprotocol, inventory
 
-proc display() {.cdecl.} =
-    discard
-
-proc reshape(width: GLsizei, height: GLsizei) {.cdecl.} =
-  if height == 0:
-    return
-
-  glViewport(0, 0, width, height)
-
-  glMatrixMode(GL_PROJECTION)
-  glLoadIdentity()
-  
-  gluPerspective(45.0, width / height, 0.1, 100.0)
-
-proc drawAll(xpos: float, ypos: float, zpos: float): void =
+proc drawAll(xpos: float, ypos: float, zpos: float, window: GLFWWindow): void =
+  glfwPollEvents()
+  glClearColor(GLFloat(172.0/255.0), GLFloat(246.0/255.0), GLFloat(246.0/255.0), GLFloat(0.98))
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
@@ -80,25 +68,25 @@ proc drawAll(xpos: float, ypos: float, zpos: float): void =
 
   glEnd()
 
-  glutSwapBuffers()
+  window.swapBuffers()
+  
+proc esc(window: GLFWwindow, key: int32, scancode: int32, action: int32, mods: int32){.cdecl.} =
+  if action == GLFWPress:
+        if key == int(GLFWKey.Escape):
+            window.setWindowShouldClose(true)
+  discard window.setKeyCallback(GLFWKeyFun(esc))
 
 var blocks = string(open("blocks.bmc").readAll).split(";")
 
-# glutInit()
-glutInitDisplayMode(GLUT_DOUBLE)
-glutInitWindowSize(640, 480)
-glutInitWindowPosition(50, 50)
-discard glutCreateWindow("BlueMC")
-
-if paramCount() == 1 and paramStr(1) == "-fullscreen":
-  glutFullScreen()
-
-glutSetCursor(GLUT_CURSOR_CROSSHAIR)
-
-glutDisplayFunc(display)
-glutReshapeFunc(reshape)
-
-loadExtensions()
+discard glfwInit()
+glfwWindowHint(GLFWContextVersionMajor, 3)
+glfwWindowHint(GLFWContextVersionMinor, 3)
+glfwWindowHint(GLFWOpenglForwardCompat, GLFW_TRUE) # Used for Mac
+glfwWindowHint(GLFWOpenglForwardCompat, GLFW_TRUE) # Used for Mac
+glfwWindowHint(GLFWResizable, GLFW_FALSE)
+let window = glfwCreateWindow(800, 600, "BlueMC") # Making a window
+window.makeContextCurrent
+doAssert glInit()
 
 glClearColor(GLFloat(172.0/255.0), GLFloat(246.0/255.0), GLFloat(246.0/255.0), GLFloat(1.0))
 glClearDepth(1.0)
@@ -106,10 +94,17 @@ glEnable(GL_DEPTH_TEST)
 glDepthFunc(GL_LEQUAL)
 glShadeModel(GL_SMOOTH)
 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+var xpos, ypos, zpos: float
+if paramCount() == 0:
+  xpos = 0.0
+  ypos = 0.0
+  zpos = 0.0
+elif paramCount() == 3:
+  xpos = parseFloat(paramStr(1))
+  ypos = parseFloat(paramStr(2))
+  zpos = parseFloat(paramStr(3))
+while not window.windowShouldClose():
+  drawAll(xpos, ypos, zpos, window)
 
-proc eventloop(): void {.gcsafe.} =
-  while true:
-    drawAll(0.0, 0.0, 0.0)
-
-spawn eventloop()
-glutMainLoop()
+window.destroyWindow()
+glfwTerminate()
