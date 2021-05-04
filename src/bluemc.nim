@@ -4,7 +4,6 @@ import camera, controller, dataprotocol, inventory
 
 proc drawAll(xpos: float, ypos: float, zpos: float, window: GLFWWindow): void =
   glfwPollEvents()
-  glClearColor(GLFloat(172.0/255.0), GLFloat(246.0/255.0), GLFloat(246.0/255.0), GLFloat(0.98))
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
@@ -92,7 +91,7 @@ glClearColor(GLFloat(172.0/255.0), GLFloat(246.0/255.0), GLFloat(246.0/255.0), G
 glClearDepth(1.0)
 glEnable(GL_DEPTH_TEST)
 glDepthFunc(GL_LEQUAL)
-glShadeModel(GL_SMOOTH)
+# glShadeModel(GL_SMOOTH)
 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
 var xpos, ypos, zpos: float
 if paramCount() == 0:

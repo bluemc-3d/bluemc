@@ -12,3 +12,4 @@ bin           = @["bluemc"]
 
 requires "nim >= 1.4.4"
 requires "nimgl >= 1.1.9"
+requires "glm >= 1.1.1"
