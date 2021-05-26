@@ -120,7 +120,6 @@ var
   bg = vec3(172f, 246f, 246f).toRGB()
   color = vec3(50f, 205f, 50f).toRGB()
   mvp = ortho(-2f, 2f, -1.5f, 1.5f, -1f, 1f)
-
 glEnable(GL_DEPTH_TEST)
 glDepthFunc(GL_LEQUAL)
 # glShadeModel(GL_SMOOTH)
@@ -141,7 +140,7 @@ while not window.windowShouldClose():
   glClear(GL_COLOR_BUFFER_BIT)
 
   glUseProgram(program)
-  glUniform3fv(uColor, GLsizei(1), color.addr)
+  glUniform3fv(uColor, GLsizei(1), color.caddr)
   glUniformMatrix4fv(GLint(uMVP), GLsizei(1), false, mvp.caddr)
 
   glBindVertexArray(mesh.vao)
