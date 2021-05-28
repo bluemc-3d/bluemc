@@ -97,6 +97,7 @@ void main() {
 """
 glShaderSource(fragment, 1, fsrc.addr, nil)
 glCompileShader(GLuint(fragment))
+echo(fragment)
 statusShader(int32(fragment))
 
 program = glCreateProgram()
